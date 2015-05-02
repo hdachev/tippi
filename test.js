@@ -3,7 +3,7 @@
 var fs = require('fs'),
     path = require('path'),
     esprima = require('esprima'),
-    assert = require('assert'),
+    fail = require('./lib/fail'),
     check = require('./lib/check'),
     prettyPrint = require('./lib/pretty-print');
 
@@ -16,7 +16,7 @@ fs.readdir(path.join(__dirname, TESTS_DIR), function (err, files) {
             var shouldFail = !!match[1];
 
             fs.readFile(path.join(__dirname, TESTS_DIR, file), function (err, code) {
-                console.log('\nType checking ' + file + ' ...');
+                console.log('\nType checking ' + file + ' ...\n');
 
                 var ast = esprima.parse(
                     code,
@@ -33,12 +33,8 @@ fs.readdir(path.join(__dirname, TESTS_DIR), function (err, files) {
                     return file + error;
                 }).join('\n'));
 
-                assert(
-                    result.hasErrors() === shouldFail,
-                    shouldFail
-                        ? 'False negative.'
-                        : 'False positive.'
-                );
+                result.hasErrors() === shouldFail
+                    || fail(shouldFail ? 'False negative.' : 'False positive.');
             });
         }
     });
