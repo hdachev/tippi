@@ -1,9 +1,5 @@
-function woot(x, y) {
-    var c = x + y;
-    let d = c + 2;
-    return c * d;
+function mul(x, y) {
+    return x * y;
 }
 
-console.log(
-    woot('hello', 'world')
-);
+mul('hello', 'world');
