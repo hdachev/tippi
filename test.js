@@ -16,25 +16,37 @@ fs.readdir(path.join(__dirname, TESTS_DIR), function (err, files) {
             var shouldFail = !!match[1];
 
             fs.readFile(path.join(__dirname, TESTS_DIR, file), function (err, code) {
-                console.log('\nType checking ' + file + ' ...\n');
+                console.log('Type checking ' + file + ' ...');
 
+                // Parse and typecheck.
+                var parseTime = Date.now();
                 var ast = esprima.parse(
                     code,
                     { loc: true }
                 );
+                parseTime = Date.now() - parseTime;
 
-                // Print AST.
-                console.log('AST: ' + prettyPrint(ast));
-
+                var checkTime = Date.now();
                 var result = check(ast);
+                checkTime = Date.now() - checkTime;
+
+                // Print AST when failing test.
+                if (result.hasErrors() !== shouldFail) {
+                    console.log('\nAST: ' + prettyPrint(ast));
+                }
 
                 // Output errors.
                 console.log(result.errors.map(function (error) {
                     return file + error;
                 }).join('\n'));
 
-                result.hasErrors() === shouldFail
-                    || fail(shouldFail ? 'False negative.' : 'False positive.');
+                if (result.hasErrors() !== shouldFail) {
+                    fail(shouldFail ? 'False negative.' : 'False positive.');
+                }
+
+                console.log(
+                    'Times: parse=' + parseTime + 'ms check=' + checkTime + 'ms\n'
+                );
             });
         }
     });
