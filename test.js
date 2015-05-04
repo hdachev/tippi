@@ -9,13 +9,15 @@ var fs = require('fs'),
 
 var TESTS_DIR = 'test';
 
+Error.stackTraceLimit = 100;
+
 fs.readdir(path.join(__dirname, TESTS_DIR), function (err, files) {
     files.sort().forEach(function (file) {
         var match = /^(?:(fail)|pass)\d+\.js$/.exec(file);
         if (match) {
             var shouldFail = !!match[1];
 
-            fs.readFile(path.join(__dirname, TESTS_DIR, file), function (err, code) {
+            fs.readFile(path.join(__dirname, TESTS_DIR, file), 'utf8', function (err, code) {
                 console.log('Type checking ' + file + ' ...');
 
                 // Parse and typecheck.
@@ -31,7 +33,7 @@ fs.readdir(path.join(__dirname, TESTS_DIR), function (err, files) {
                 checkTime = Date.now() - checkTime;
 
                 // Print AST when failing test.
-                if (result.hasErrors() !== shouldFail) {
+                if (result.hasErrors() !== shouldFail || code.indexOf('//ast') >= 0) {
                     console.log('\nAST: ' + prettyPrint(ast));
                 }
 
