@@ -4,5 +4,5 @@ function get(obj, prop) {
     return obj[prop];
 }
 
-get(myObj, 'a'); //pass
-get(myObj, 'c'); //fail
+get(myObj, 'a');
+get(myObj, 'c'); //fail `c`
