@@ -29,7 +29,7 @@ fs.readdir(path.join(__dirname, TESTS_DIR), function (err, files) {
                 parseTime = Date.now() - parseTime;
 
                 var checkTime = Date.now();
-                var result = check(ast);
+                var result = check(ast, { name: file });
                 checkTime = Date.now() - checkTime;
 
                 // Print AST when failing test.
