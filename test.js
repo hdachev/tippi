@@ -38,9 +38,9 @@ fs.readdir(path.join(__dirname, TESTS_DIR), function (err, files) {
                 }
 
                 // Output errors.
-                console.log(result.errors.map(function (error) {
-                    return file + error;
-                }).join('\n'));
+                console.log(
+                    result.errors.join('\n')
+                );
 
                 if (result.hasErrors() !== shouldFail) {
                     fail(shouldFail ? 'False negative.' : 'False positive.');
