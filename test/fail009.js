@@ -14,4 +14,4 @@ var a = new Point(0, 1);
 var b = new Point(1, 2);
 var c = a.add(b);
 
-c.add({ u: 1, v: 1 }); //fail no x on u v
+c.add({ u: 1, v: 1 }); //fail x not defined
