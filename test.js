@@ -7,7 +7,8 @@ var fs = require('fs'),
     check = require('./lib/check'),
     prettyPrint = require('./lib/pretty-print');
 
-var TESTS_DIR = 'test';
+var TESTS_DIR = 'test',
+    OFFENDER = null;
 
 Error.stackTraceLimit = 100;
 
@@ -22,15 +23,17 @@ fs.readdir(path.join(__dirname, TESTS_DIR), function (err, files) {
 
                 // Parse and typecheck.
                 var parseTime = Date.now();
-                var ast = esprima.parse(
+                var ast = OFFENDER = esprima.parse(
                     code,
                     { loc: true }
                 );
                 parseTime = Date.now() - parseTime;
 
+                OFFENDER = ast;
                 var checkTime = Date.now();
                 var result = check(ast, { name: file });
                 checkTime = Date.now() - checkTime;
+                OFFENDER = null;
 
                 // Print AST when failing test.
                 if (result.hasErrors() !== shouldFail || code.indexOf('//ast') >= 0) {
@@ -52,5 +55,11 @@ fs.readdir(path.join(__dirname, TESTS_DIR), function (err, files) {
             });
         }
     });
+});
+
+process.on('exit', function () {
+    if (OFFENDER) {
+        console.log('\nAST: ' + prettyPrint(OFFENDER));
+    }
 });
 
