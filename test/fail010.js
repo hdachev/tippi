@@ -4,4 +4,4 @@ function guard(arg) {
     }
 }
 
-guard(undef); //fail scope
+guard(undef); //fail undef

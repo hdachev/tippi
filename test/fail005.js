@@ -1,5 +1,5 @@
 function slon(arg) {
-    return arg.slon; //fail string
+    return arg.slon;
 }
 
-slon('hello');
+slon('hello'); //fail slon hello

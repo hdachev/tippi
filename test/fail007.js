@@ -5,4 +5,4 @@ function get(obj, prop) {
 }
 
 get(myObj, 'a');
-get(myObj, 'c'); //fail c not defined
+get(myObj, 'c'); //fail c defined

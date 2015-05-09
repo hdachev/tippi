@@ -1,5 +1,5 @@
 function mul(x, y) {
-    return x * y; //fail string
+    return x * y;
 }
 
-mul('hello', 'world');
+mul('hello', 'world'); //fail hello

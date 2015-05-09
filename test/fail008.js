@@ -7,4 +7,4 @@ var obj0 = tuple(),
 
 obj0.c = 3;
 obj0.a + obj0.c;
-obj1.a + obj1.c; //fail c not defined
+obj1.a + obj1.c; //fail c defined
