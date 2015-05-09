@@ -8,6 +8,8 @@ var fs = require('fs'),
     prettyPrint = require('./lib/pretty-print');
 
 var TESTS_DIR = 'test',
+    PARSE_TIME = 0,
+    CHECK_TIME = 0,
     OFFENDER = null;
 
 Error.stackTraceLimit = 100;
@@ -18,42 +20,29 @@ fs.readdir(path.join(__dirname, TESTS_DIR), function (err, files) {
         if (match) {
 
             fs.readFile(path.join(__dirname, TESTS_DIR, file), 'utf8', function (err, code) {
-                console.log('Type checking ' + file + ' ...');
 
                 // Parse and typecheck.
-                var parseTime = Date.now();
-                var ast = OFFENDER = esprima.parse(
+                var parseStart = Date.now();
+                var ast = esprima.parse(
                     code,
                     { loc: true }
                 );
-                parseTime = Date.now() - parseTime;
+                PARSE_TIME += Date.now() - parseStart;
+                OFFENDER = ast;
 
-                var checkTime = Date.now();
+                var checkStart = Date.now();
                 var result = check(ast, { name: file });
-                checkTime = Date.now() - checkTime;
+                CHECK_TIME += Date.now() - checkStart;
 
                 // Output errors.
-                assertErrors(code, result);
+                assertErrorsExpected(code, result);
                 OFFENDER = null;
-
-                console.log(
-                    'Times: parse=' + parseTime + 'ms check=' + checkTime + 'ms\n'
-                );
             });
         }
     });
 });
 
-process.on('exit', function () {
-    if (OFFENDER) {
-        console.log('\nAST: ' + prettyPrint(OFFENDER));
-    }
-});
-
-
-//fail asserts in testcases
-
-function assertErrors(code, result) {
+function assertErrorsExpected(code, result) {
     var lines = code.split('\n'),
         traps = [];
 
@@ -86,4 +75,14 @@ function assertErrors(code, result) {
         fail('NONE MATCH', traps[0]);
     }
 }
+
+process.on('exit', function () {
+    if (OFFENDER) {
+        console.log('\nAST: ' + prettyPrint(OFFENDER));
+    }
+
+    console.log(
+        'Times: parse=' + PARSE_TIME + 'ms check=' + CHECK_TIME + 'ms\n'
+    );
+});
 
