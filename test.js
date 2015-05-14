@@ -50,7 +50,7 @@ function assertErrorsExpected(code, result) {
         var trap = /\/\/fail (.*)/.exec(line);
         if (trap) {
             traps.push(new RegExp(
-                trap[1].trim().split(/\s+/).join('[^]+') + '[^]+at[^]+' + ':' + (idx + 1) + ':', 'i'
+                trap[1].trim().split(/\s+/).join('.+') + '[^]+at.+' + ':' + (idx + 1) + ':', 'i'
             ));
         }
     });
@@ -71,8 +71,7 @@ function assertErrorsExpected(code, result) {
     });
 
     if (traps.length) {
-        console.log('TRAPS', traps);
-        fail('NONE MATCH', traps[0]);
+        fail('NONE MATCH', traps);
     }
 }
 

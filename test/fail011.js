@@ -6,4 +6,4 @@ function fib(n) {
     }
 }
 
-fib(7).slon; //fail slon
+fib(7).slon; //fail slon number
